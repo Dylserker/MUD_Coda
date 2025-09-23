@@ -2,7 +2,7 @@
 
 namespace App\Npc\Incarnam;
 
-class Julien_Gi {
+class JulienGi {
     public function name(): string {
         return 'JulienGi';
     }
