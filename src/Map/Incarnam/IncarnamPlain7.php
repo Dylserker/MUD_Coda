@@ -18,7 +18,7 @@ class IncarnamPlain7 extends Blueprint
     public function description(): string { return 'Plaine numéro 7 d\'Incarnam.'; }
     public function position(): Position { return $this->position; }
 
-    public function npcs(): array { return []; }
+    public function npcs(): array { return [new \App\Npc\Incarnam\Marylork()]; }
     public function items(): array { return []; }
     public function monsters(): array { return []; }
 }

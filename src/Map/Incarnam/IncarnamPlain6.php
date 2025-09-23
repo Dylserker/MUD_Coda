@@ -18,7 +18,7 @@ class IncarnamPlain6 extends Blueprint
     public function description(): string { return 'Plaine numéro 6 d\'Incarnam.'; }
     public function position(): Position { return $this->position; }
 
-    public function npcs(): array { return []; }
+    public function npcs(): array { return [new \App\Npc\Incarnam\Xelorat()]; }
     public function items(): array { return []; }
     public function monsters(): array { return []; }
 }

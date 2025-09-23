@@ -18,7 +18,7 @@ class IncarnamTraverser4 extends Blueprint
     public function description(): string { return 'Le passage numéro 4 d\'Incarnam.'; }
     public function position(): Position { return $this->position; }
 
-    public function npcs(): array { return []; }
+    public function npcs(): array { return [new \App\Npc\Incarnam\Pipelette()]; }
     public function items(): array { return []; }
     public function monsters(): array { return []; }
 }
