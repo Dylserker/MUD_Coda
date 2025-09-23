@@ -15,7 +15,7 @@ class SaveGame extends AbstractComponent {
     }
 
     public function getEventName() : array {
-        return ['savegame.save', 'savegame.load'];
+        return ['savegame.save', 'savegame.load', 'savegame.choose_and_load'];
     }
 
     public function require() : array {
@@ -43,13 +43,35 @@ class SaveGame extends AbstractComponent {
             case 'savegame.load':
                 $this->performLoad();
                 break;
+            case 'savegame.choose_and_load':
+                $this->chooseAndLoad();
+                break;
         }
     }
 
-    private function performSave() : void {
+    private function ensureSavesDir(): string {
         $dir = rtrim($this->config['directory'], '/');
         if(!is_dir($dir)) { @mkdir($dir, 0777, true); }
-        $file = $dir . '/' . $this->config['slot'];
+        return $dir;
+    }
+
+    private function slug(string $name): string {
+        $name = trim($name);
+        $name = iconv('UTF-8', 'ASCII//TRANSLIT', $name);
+        $name = preg_replace('~[^A-Za-z0-9_\-]+~', '_', $name);
+        $name = preg_replace('~_+~', '_', $name);
+        return trim($name, '._-') ?: 'player';
+    }
+
+    private function guessFileNameForCharacter(): string {
+        $dir = $this->ensureSavesDir();
+        $character = $this->container->getCharacter();
+        $slug = $this->slug($character?->name ?? 'player');
+        return $dir . '/' . $slug . '.json';
+    }
+
+    private function performSave() : void {
+        $file = $this->guessFileNameForCharacter();
 
         $map = $this->container->getMap();
         $character = $this->container->getCharacter();
@@ -72,14 +94,16 @@ class SaveGame extends AbstractComponent {
         ];
 
         file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE));
-        $this->container->getPrettyPrinter()?->writeLn('Sauvegarde effectuée.', 'green');
+        // Mettre à jour le slot courant pour un prochain load direct
+        $this->config['slot'] = basename($file);
+        $this->container->getPrettyPrinter()?->writeLn('Sauvegarde effectuée dans ' . basename($file), 'green');
     }
 
     private function performLoad() : void {
-        $dir = rtrim($this->config['directory'], '/');
+        $dir = $this->ensureSavesDir();
         $file = $dir . '/' . $this->config['slot'];
         if(!is_file($file)) {
-            $this->container->getPrettyPrinter()?->writeLn('Aucune sauvegarde trouvée.', 'red');
+            $this->container->getPrettyPrinter()?->writeLn('Aucune sauvegarde trouvée: ' . $this->config['slot'], 'red');
             return;
         }
 
@@ -103,6 +127,35 @@ class SaveGame extends AbstractComponent {
             foreach($stats as $k=>$v) { $character->statistics->set($k, (int)$v); }
         }
 
-        $this->container->getPrettyPrinter()?->writeLn('Partie chargée.', 'green');
+        $this->container->getPrettyPrinter()?->writeLn('Partie chargée depuis ' . basename($file), 'green');
+    }
+
+    private function chooseAndLoad() : void {
+        $pp = $this->container->getPrettyPrinter();
+        $dir = $this->ensureSavesDir();
+        $files = array_values(array_filter(scandir($dir) ?: [], function($f){ return str_ends_with($f, '.json'); }));
+
+        if(empty($files)) {
+            $pp?->writeLn('Aucune sauvegarde disponible.', 'red');
+            return;
+        }
+
+        $rows = [];
+        foreach($files as $i => $f) {
+            $path = $dir . '/' . $f;
+            $meta = @json_decode(@file_get_contents($path) ?: '', true);
+            $title = $meta['game'] ?? 'Inconnue';
+            $pname = $meta['character']['name'] ?? 'Inconnu';
+            $time = $meta['saved_at'] ?? date('c', @filemtime($path) ?: time());
+            $rows[] = [$i, $f, $pname, $title, $time];
+        }
+        $pp?->writeTable(['Index','Fichier','Personnage','Jeu','Date'], $rows);
+
+        $choice = null;
+        while(!is_numeric($choice) || !isset($files[(int)$choice])) {
+            $choice = readline('Choisissez une sauvegarde (index) >> ');
+        }
+        $this->config['slot'] = $files[(int)$choice];
+        $this->performLoad();
     }
 }

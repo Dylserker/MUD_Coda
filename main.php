@@ -9,7 +9,12 @@ use Jugid\Staurie\Component\Map\Map;
 use Jugid\Staurie\Component\Menu\Menu;
 use Jugid\Staurie\Component\Money\Money;
 use Jugid\Staurie\Component\PrettyPrinter\PrettyPrinter;
+use Jugid\Staurie\Component\Race\Race;
+use App\Component\Races\Sacrieur;
+use App\Component\Races\Eniripsa;
+use App\Component\Races\Feca;
 use App\Component\SaveGame\SaveGame;
+use App\Component\Fight\Fight;
 use Jugid\Staurie\Staurie;
 
 require_once __DIR__.'/vendor/autoload.php';
@@ -30,6 +35,7 @@ $menu->configuration([
     'text'=> "Bienvenue dans Incarnam (Coda)",
     'labels'=> [
         'new_game' => 'Entrer dans le monde',
+        'continue' => 'Continuer la partie',
         'quit'=> 'Quitter le jeu',
     ]
 ]);
@@ -67,12 +73,19 @@ $save->configuration([
     'slot' => 'slot1.json'
 ]);
 
+$race = $container->registerComponent(Race::class);
+$race->configuration([
+    'races' => [Sacrieur::class, Eniripsa::class, Feca::class]
+]);
+
+$fight = $container->registerComponent(Fight::class);
+
 $character = $container->getCharacter();
 $character->configuration([
-    'ask_name' => false,
-    'ask_gender' => false,
-    'name' => 'Héro',
-    'gender' => 'X'
+    'ask_name' => true,
+    'ask_gender' => true,
+    'character_has_name' => true,
+    'character_has_gender' => true
 ]);
 
 $staurie->run();
