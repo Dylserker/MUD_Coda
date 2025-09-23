@@ -5,17 +5,17 @@ namespace App\Map\Incarnam;
 use Jugid\Staurie\Component\Map\Blueprint;
 use Jugid\Staurie\Game\Position\Position;
 
-class Temple extends Blueprint
+class IncarnamGraveyard5 extends Blueprint
 {
     private Position $position;
 
     public function __construct()
     {
-    $this->position = new Position(0, 0);
+        $this->position = new Position(7, -3);
     }
 
-    public function name(): string { return 'Incarnam - Temple'; }
-    public function description(): string { return 'Le temple d\'Incarnam, baigné de lumière.'; }
+    public function name(): string { return 'Incarnam - Cimetière 5'; }
+    public function description(): string { return 'Cimetière numéro 5 d\'Incarnam.'; }
     public function position(): Position { return $this->position; }
 
     public function npcs(): array { return []; }
