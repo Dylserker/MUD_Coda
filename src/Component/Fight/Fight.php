@@ -52,24 +52,95 @@ class Fight extends AbstractComponent {
         $pp->writeUnder("Fight vs {$monster->name()} (Lv {$monster->level()})", 'green');
 
         $round = 1;
+        $defenseBoost = 0;
+        $esquiveActive = false;
         while($playerHp > 0 && $monsterHp > 0) {
             $pp->writeUnder("Round $round", 'yellow');
-            // Player attacks
-            $playerAttack = max(1, 3 + $character->statistics->value('ability'));
-            $damageToMonster = max(1, $playerAttack - $monster->defense());
-            $monsterHp -= $damageToMonster;
-            $pp->writeLn("You hit {$monster->name()} for $damageToMonster (HP: ".max(0,$monsterHp).")");
+            // Choix du joueur
+            $pp->writeLn("Que veux-tu faire ?", 'cyan');
+            $pp->writeLn("1. Attaquer\n2. Défendre\n3. Esquiver\n4. Fuir", 'white');
+            $choice = trim(fgets(STDIN));
+            switch($choice) {
+                case '1': // Attaquer
+                    $playerAttack = max(1, 3 + $character->statistics->value('ability'));
+                    $damageToMonster = max(1, $playerAttack - $monster->defense());
+                    $monsterHp -= $damageToMonster;
+                    $pp->writeLn("Tu frappes {$monster->name()} pour $damageToMonster (HP: ".max(0,$monsterHp).")", 'green');
+                    break;
+                case '2': // Défendre
+                    $defenseBoost = 3;
+                    $pp->writeLn("Tu te mets en position défensive (+3 DEF ce tour)", 'yellow');
+                    break;
+                case '3': // Esquiver
+                    $esquiveActive = true;
+                    $pp->writeLn("Tu tentes d'esquiver la prochaine attaque !", 'yellow');
+                    break;
+                case '4': // Fuir
+                    $chance = $character->statistics->value('chance');
+                    if(rand(0,100) < $chance) {
+                        $pp->writeLn("Tu as réussi à fuir !", 'green');
+                        return;
+                    } else {
+                        $pp->writeLn("Fuite ratée !", 'red');
+                    }
+                    break;
+                default:
+                    $pp->writeLn("Action invalide, tu perds ton tour !", 'red');
+                    break;
+            }
             if($monsterHp <= 0) { break; }
 
-            // Monster attacks
-            $skills = $monster->skills();
-            $skillName = array_rand($skills);
-            $skillDmg = (int)$skills[$skillName];
-            $playerDefense = $character->statistics->value('defense');
-            $damageToPlayer = max(1, $skillDmg - $playerDefense);
-            $playerHp -= $damageToPlayer;
-            $pp->writeLn("{$monster->name()} uses $skillName for $damageToPlayer (Your HP: ".max(0,$playerHp).")");
-
+            // Tour du monstre (IA simple)
+            $monsterActions = ['attack', 'defend', 'esquive'];
+            $monsterChoice = $monsterActions[array_rand($monsterActions)];
+            $monsterDefBoost = 0;
+            $monsterEsquive = false;
+            switch($monsterChoice) {
+                case 'attack':
+                    $skills = $monster->skills();
+                    $skillName = array_rand($skills);
+                    $skillDmg = (int)$skills[$skillName];
+                    $totalDefense = $character->statistics->value('defense') + $defenseBoost;
+                    if($esquiveActive) {
+                        $chance = $character->statistics->value('chance');
+                        if(rand(0,100) < $chance) {
+                            $pp->writeLn("Tu esquives l'attaque du monstre !", 'green');
+                            $damageToPlayer = 0;
+                        } else {
+                            $damageToPlayer = max(1, $skillDmg - $totalDefense);
+                            $pp->writeLn("Esquive ratée !", 'red');
+                        }
+                    } else {
+                        $damageToPlayer = max(1, $skillDmg - $totalDefense);
+                    }
+                    $playerHp -= $damageToPlayer;
+                    $pp->writeLn("{$monster->name()} utilise $skillName et inflige $damageToPlayer (HP: ".max(0,$playerHp).")", 'red');
+                    break;
+                case 'defend':
+                    $monsterDefBoost = 3;
+                    $pp->writeLn("{$monster->name()} se met en position défensive (+3 DEF ce tour)", 'yellow');
+                    break;
+                case 'esquive':
+                    $monsterEsquive = true;
+                    $pp->writeLn("{$monster->name()} tente d'esquiver la prochaine attaque !", 'yellow');
+                    break;
+            }
+            // Application de l'esquive du monstre au prochain tour
+            if($monsterEsquive && $choice === '1') {
+                $chance = $monster->chance();
+                if(rand(0,100) < $chance) {
+                    $pp->writeLn("{$monster->name()} esquive ton attaque !", 'yellow');
+                    // Annule les dégâts du joueur ce tour
+                    $monsterHp += $damageToMonster;
+                }
+            }
+            // Application de la défense du monstre
+            if($monsterDefBoost > 0 && $choice === '1') {
+                $monsterHp += 3; // Simule la réduction de dégâts
+            }
+            // Reset boosts/esquive
+            $defenseBoost = 0;
+            $esquiveActive = false;
             $round++;
         }
 
