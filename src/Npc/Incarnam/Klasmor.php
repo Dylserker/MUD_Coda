@@ -2,7 +2,7 @@
 
 namespace App\Npc\Incarnam;
 
-use Jugid\Staurie\Game\Npc;
+use App\Staurie\Game\Npc;
 
 class Klasmor extends Npc {
     public function name(): string {

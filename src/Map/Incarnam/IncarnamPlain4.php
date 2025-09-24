@@ -3,8 +3,8 @@
 namespace App\Map\Incarnam;
 use App\Map\Helper\MonsterMapHelper;
 
-use Jugid\Staurie\Component\Map\Blueprint;
-use Jugid\Staurie\Game\Position\Position;
+use App\Staurie\Component\Map\Blueprint;
+use App\Staurie\Game\Position\Position;
 
 class IncarnamPlain4 extends Blueprint
 {

@@ -2,14 +2,14 @@
 
 namespace App\Component\Fight;
 
-use Jugid\Staurie\Component\AbstractComponent;
-use Jugid\Staurie\Component\Console\Console;
-use Jugid\Staurie\Component\Map\Map;
-use Jugid\Staurie\Component\PrettyPrinter\PrettyPrinter;
-use Jugid\Staurie\Component\Level\Level;
-use Jugid\Staurie\Component\Character\MainCharacter;
+use App\Staurie\Component\AbstractComponent;
+use App\Staurie\Component\Console\Console;
+use App\Staurie\Component\Map\Map;
+use App\Staurie\Component\PrettyPrinter\PrettyPrinter;
+use App\Staurie\Component\Level\Level;
+use App\Staurie\Component\Character\MainCharacter;
 use App\Component\Fight\CoreFunctions\FightFunction;
-use Jugid\Staurie\Game\Monster as GameMonster;
+use App\Staurie\Game\Monster as GameMonster;
 
 class Fight extends AbstractComponent {
 
@@ -144,6 +144,7 @@ class Fight extends AbstractComponent {
             $round++;
         }
 
+        // Bloc de victoire et sauvegarde en dehors de la boucle
         if($playerHp <= 0 && $monsterHp <= 0) {
             $pp->writeLn('It\'s a draw... both fell.', 'yellow');
             return;
@@ -158,20 +159,72 @@ class Fight extends AbstractComponent {
         $pp->writeLn("{$monster->name()} defeated!", 'green');
         // Remove monster from blueprint
         unset($bp->monsters[$monster->name()]);
-        // Gain experience
+        // Gain experience avec LevelSystem
         $xp = $monster->experience();
-        $level->experience += $xp;
-        $character->xp += $xp;
-        // Si le niveau change, le mettre à jour
-        if (property_exists($level, 'level')) {
-            $character->level = $level->level;
+        if (!isset($character->levelSystem)) {
+            $character->levelSystem = new \MUD_Coda\Component\LevelSystem();
         }
+        $character->levelSystem->addXp($xp);
         $pp->writeLn("You gained $xp XP");
-        $level->verifiy();
         // Sauvegarde automatique après gain d'XP et de niveau
         $saveGame = $this->container->getComponent('savegame');
         if ($saveGame) {
             $saveGame->performSave();
         }
+
+            // Tour du monstre (IA simple)
+            $monsterActions = ['attack', 'defend', 'esquive'];
+            $monsterChoice = $monsterActions[array_rand($monsterActions)];
+            $monsterDefBoost = 0;
+            $monsterEsquive = false;
+            switch($monsterChoice) {
+                case 'attack':
+                    $skills = $monster->skills();
+                    $skillName = array_rand($skills);
+                    $skillDmg = (int)$skills[$skillName];
+                    $totalDefense = $character->statistics->value('defense') + $defenseBoost;
+                    if($esquiveActive) {
+                        $chance = $character->statistics->value('chance');
+                        if(rand(0,100) < $chance) {
+                            $pp->writeLn("Tu esquives l'attaque du monstre !", 'green');
+                            $damageToPlayer = 0;
+                        } else {
+                            $damageToPlayer = max(1, $skillDmg - $totalDefense);
+                            $pp->writeLn("Esquive ratée !", 'red');
+                        }
+                    } else {
+                        $damageToPlayer = max(1, $skillDmg - $totalDefense);
+                    }
+                    $playerHp -= $damageToPlayer;
+                    $pp->writeLn("{$monster->name()} utilise $skillName et inflige $damageToPlayer (HP: ".max(0,$playerHp).")", 'red');
+                    break;
+                case 'defend':
+                    $monsterDefBoost = 3;
+                    $pp->writeLn("{$monster->name()} se met en position défensive (+3 DEF ce tour)", 'yellow');
+                    break;
+                case 'esquive':
+                    $monsterEsquive = true;
+                    $pp->writeLn("{$monster->name()} tente d'esquiver la prochaine attaque !", 'yellow');
+                    break;
+            }
+            // Application de l'esquive du monstre au prochain tour
+            if($monsterEsquive && $choice === '1') {
+                $chance = $monster->chance();
+                if(rand(0,100) < $chance) {
+                    $pp->writeLn("{$monster->name()} esquive ton attaque !", 'yellow');
+                    // Annule les dégâts du joueur ce tour
+                    $monsterHp += $damageToMonster;
+                }
+            }
+            // Application de la défense du monstre
+            if($monsterDefBoost > 0 && $choice === '1') {
+                $monsterHp += 3; // Simule la réduction de dégâts
+            }
+            // Reset boosts/esquive
+            $defenseBoost = 0;
+            $esquiveActive = false;
+            $round++;
+        }
+
+        // Fin de la méthode startFight
     }
-}

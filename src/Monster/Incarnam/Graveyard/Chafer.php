@@ -1,7 +1,7 @@
 <?php
 namespace App\Monster\Incarnam\Graveyard;
 
-use Jugid\Staurie\Game\Monster;
+use App\Staurie\Game\Monster;
 
 class Chafer extends Monster {
     public function name() : string { return 'Chafer'; }

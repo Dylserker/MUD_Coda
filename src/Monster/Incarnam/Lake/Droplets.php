@@ -2,7 +2,7 @@
 
 namespace App\Monster\Incarnam\Lake;
 
-use Jugid\Staurie\Game\Monster;
+use App\Staurie\Game\Monster;
 
 class Droplets extends Monster {
     public function name() : string { return 'Droplets'; }

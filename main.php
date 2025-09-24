@@ -1,21 +1,21 @@
 <?php
 
-use Jugid\Staurie\Component\Character\MainCharacter;
-use Jugid\Staurie\Component\Console\Console;
-use Jugid\Staurie\Component\Introduction\Introduction;
-use Jugid\Staurie\Component\Inventory\Inventory;
-use Jugid\Staurie\Component\Level\Level;
-use Jugid\Staurie\Component\Map\Map;
-use Jugid\Staurie\Component\Menu\Menu;
-use Jugid\Staurie\Component\Money\Money;
-use Jugid\Staurie\Component\PrettyPrinter\PrettyPrinter;
-use Jugid\Staurie\Component\Race\Race;
+use App\Staurie\Component\Character\MainCharacter;
+use App\Staurie\Component\Console\Console;
+use App\Staurie\Component\Introduction\Introduction;
+use App\Staurie\Component\Inventory\Inventory;
+use App\Staurie\Component\Level\Level;
+use App\Staurie\Component\Map\Map;
+use App\Staurie\Component\Menu\Menu;
+use App\Staurie\Component\Money\Money;
+use App\Staurie\Component\PrettyPrinter\PrettyPrinter;
+use App\Staurie\Component\Race\Race;
 use App\Component\Races\Sacrieur;
 use App\Component\Races\Eniripsa;
 use App\Component\Races\Feca;
 use App\Component\SaveGame\SaveGame;
 use App\Component\Fight\Fight;
-use Jugid\Staurie\Staurie;
+use App\Staurie\Staurie;
 
 require_once __DIR__.'/vendor/autoload.php';
 

@@ -2,7 +2,7 @@
 
 namespace App\Monster\Incarnam\Field;
 
-use Jugid\Staurie\Game\Monster;
+use App\Staurie\Game\Monster;
 
 class Tofu extends Monster {
     public function name() : string { return 'Tofu'; }

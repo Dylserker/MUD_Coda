@@ -2,7 +2,7 @@
 
 namespace App\Component\Races;
 
-use Jugid\Staurie\Component\Race\AbstractRace;
+use App\Staurie\Component\Race\AbstractRace;
 
 class Feca extends AbstractRace {
     public function name() : string { return 'Feca'; }

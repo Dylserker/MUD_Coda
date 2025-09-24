@@ -2,9 +2,9 @@
 
 namespace App\Component\SaveGame;
 
-use Jugid\Staurie\Component\AbstractComponent;
-use Jugid\Staurie\Component\Console\Console;
-use Jugid\Staurie\Component\PrettyPrinter\PrettyPrinter;
+use App\Staurie\Component\AbstractComponent;
+use App\Staurie\Component\Console\Console;
+use App\Staurie\Component\PrettyPrinter\PrettyPrinter;
 use App\Component\SaveGame\CoreFunctions\SaveFunction;
 use App\Component\SaveGame\CoreFunctions\LoadFunction;
 
@@ -88,7 +88,8 @@ class SaveGame extends AbstractComponent {
                 'gender' => $character?->gender ?? 'Unknown',
                 'race' => $character?->race ? get_class($character->race) : null,
                 'statistics' => $character?->statistics?->asArray() ?? [],
-                'xp' => $character?->xp ?? null,
+                'level' => isset($character->levelSystem) ? $character->levelSystem->level : 1,
+                'xp' => isset($character->levelSystem) ? $character->levelSystem->xp : 0,
                 'equipment' => array_map(function($item){ return $item?->name(); }, $character?->equipment ?? [])
             ],
             'inventory' => array_map(function($item){ return $item->name(); }, $inventory?->inventory ?? []),
@@ -130,9 +131,10 @@ class SaveGame extends AbstractComponent {
             }
             $stats = $json['character']['statistics'] ?? [];
             foreach($stats as $k=>$v) { $character->statistics->set($k, (int)$v); }
-            if (isset($json['character']['xp'])) {
-                $character->xp = (int)$json['character']['xp'];
-            }
+            // Chargement du système de niveau
+            $level = isset($json['character']['level']) ? (int)$json['character']['level'] : 1;
+            $xp = isset($json['character']['xp']) ? (int)$json['character']['xp'] : 0;
+            $character->levelSystem = new \MUD_Coda\Component\LevelSystem($level, $xp);
         }
 
         $this->container->getPrettyPrinter()?->writeLn('Partie chargée depuis ' . basename($file), 'green');

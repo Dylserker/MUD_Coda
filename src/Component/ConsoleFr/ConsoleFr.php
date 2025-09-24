@@ -2,8 +2,8 @@
 
 namespace App\Component\ConsoleFr;
 
-use Jugid\Staurie\Component\AbstractComponent;
-use Jugid\Staurie\Component\Console\Console;
+use App\Staurie\Component\AbstractComponent;
+use App\Staurie\Component\Console\Console;
 use App\Component\ConsoleFr\CoreFunctions\AliasFunction;
 
 class ConsoleFr extends AbstractComponent {

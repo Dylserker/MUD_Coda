@@ -2,8 +2,8 @@
 
 namespace App\Map\Incarnam;
 
-use Jugid\Staurie\Component\Map\Blueprint;
-use Jugid\Staurie\Game\Position\Position;
+use App\Staurie\Component\Map\Blueprint;
+use App\Staurie\Game\Position\Position;
 
 class IncarnamTraverser6 extends Blueprint
 {

@@ -2,7 +2,7 @@
 
 namespace App\Component\SaveGame\CoreFunctions;
 
-use Jugid\Staurie\Component\Console\AbstractConsoleFunction;
+use App\Staurie\Component\Console\AbstractConsoleFunction;
 
 class SaveFunction extends AbstractConsoleFunction {
 

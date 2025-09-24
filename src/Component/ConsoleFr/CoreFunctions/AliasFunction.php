@@ -2,7 +2,7 @@
 
 namespace App\Component\ConsoleFr\CoreFunctions;
 
-use Jugid\Staurie\Component\Console\AbstractConsoleFunction;
+use App\Staurie\Component\Console\AbstractConsoleFunction;
 
 class AliasFunction extends AbstractConsoleFunction {
 

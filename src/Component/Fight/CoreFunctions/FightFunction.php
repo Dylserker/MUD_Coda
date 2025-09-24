@@ -2,7 +2,7 @@
 
 namespace App\Component\Fight\CoreFunctions;
 
-use Jugid\Staurie\Component\Console\AbstractConsoleFunction;
+use App\Staurie\Component\Console\AbstractConsoleFunction;
 
 class FightFunction extends AbstractConsoleFunction {
     public function action(array $args) : void {

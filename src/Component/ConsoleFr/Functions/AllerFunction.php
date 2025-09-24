@@ -2,7 +2,7 @@
 
 namespace App\Component\ConsoleFr\Functions;
 
-use Jugid\Staurie\Component\Console\AbstractConsoleFunction;
+use App\Staurie\Component\Console\AbstractConsoleFunction;
 
 class AllerFunction extends AbstractConsoleFunction {
     private array $dirs = ['nord'=>'north','sud'=>'south','ouest'=>'west','est'=>'east'];

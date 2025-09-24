@@ -2,8 +2,8 @@
 
 namespace MUD_Coda\Component\Fight;
 
-use Jugid\Staurie\Component\Character\MainCharacter;
-use Jugid\Staurie\Component\Character\Statistics;
+use App\Staurie\Component\Character\MainCharacter;
+use App\Staurie\Component\Character\Statistics;
 
 class Combat
 {

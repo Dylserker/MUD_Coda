@@ -1,7 +1,7 @@
 <?php
 namespace App\Monster\Incarnam\Plain;
 
-use Jugid\Staurie\Game\Monster;
+use App\Staurie\Game\Monster;
 
 class Boufton extends Monster {
     public function name() : string { return 'Boufton'; }

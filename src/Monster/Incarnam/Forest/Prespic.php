@@ -1,7 +1,7 @@
 <?php
 namespace App\Monster\Incarnam\Forest;
 
-use Jugid\Staurie\Game\Monster;
+use App\Staurie\Game\Monster;
 
 class Prespic extends Monster {
     public function name() : string { return 'Prespic'; }

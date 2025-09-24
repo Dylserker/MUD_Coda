@@ -2,7 +2,7 @@
 
 namespace App\Component\ConsoleFr\Functions;
 
-use Jugid\Staurie\Component\Console\AbstractConsoleFunction;
+use App\Staurie\Component\Console\AbstractConsoleFunction;
 
 class PoserFunction extends AbstractConsoleFunction {
     public function action(array $args) : void { $this->getContainer()->dispatcher()->dispatch('inventory.drop', ['item_name'=>$args[0] ?? '']); }

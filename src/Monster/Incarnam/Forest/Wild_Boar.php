@@ -1,7 +1,7 @@
 <?php
 namespace App\Monster\Incarnam\Forest;
 
-use Jugid\Staurie\Game\Monster;
+use App\Staurie\Game\Monster;
 
 class Wild_Boar extends Monster {
     public function name() : string { return 'Wild_Boar'; }

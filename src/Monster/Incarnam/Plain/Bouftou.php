@@ -1,7 +1,7 @@
 <?php
 namespace App\Monster\Incarnam\Plain;
 
-use Jugid\Staurie\Game\Monster;
+use App\Staurie\Game\Monster;
 use App\Component\Stats;
 use App\Component\StatsInterface;
 use App\Map\Helper\MonsterInterface;
