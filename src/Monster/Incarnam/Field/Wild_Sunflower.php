@@ -5,7 +5,7 @@ namespace App\Monster\Incarnam\Field;
 use Jugid\Staurie\Game\Monster;
 
 class Wild_Sunflower extends Monster {
-    public function name() : string { return 'Wild Sunflower'; }
+    public function name() : string { return 'Wild_Sunflower'; }
     public function description(): string { return 'Tournesol sauvage qui pique sous le soleil.'; }
     public function level() : int { return 2; }
     public function health_points(): int { return 20; }

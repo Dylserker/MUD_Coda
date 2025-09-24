@@ -5,7 +5,7 @@ namespace App\Monster\Incarnam\Forest;
 use Jugid\Staurie\Game\Monster;
 
 class Wild_Boar extends Monster {
-    public function name() : string { return 'Wild Boar'; }
+    public function name() : string { return 'Wild_Boar'; }
     public function description(): string { return 'Sanglier féroce qui charge sans prévenir.'; }
     public function level() : int { return 4; }
     public function health_points(): int { return 28; }
