@@ -135,6 +135,12 @@ class SaveGame extends AbstractComponent {
             $level = isset($json['character']['level']) ? (int)$json['character']['level'] : 1;
             $xp = isset($json['character']['xp']) ? (int)$json['character']['xp'] : 0;
             $character->levelSystem = new \MUD_Coda\Component\LevelSystem($level, $xp);
+                // Affichage automatique dans le terminal
+                $pp = $this->container->getPrettyPrinter();
+                if ($pp) {
+                    $pp->writeLn('XP : ' . $xp);
+                    $pp->writeLn('Niveau : ' . $level);
+                }
         }
 
         $this->container->getPrettyPrinter()?->writeLn('Partie chargée depuis ' . basename($file), 'green');

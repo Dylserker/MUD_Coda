@@ -22,11 +22,27 @@ class MainCharacter extends AbstractComponent {
     public $level = 1;
     // Système de niveau synchronisé
     public function addXp(int $amount) {
-        $this->xp += $amount;
-        while ($this->xp >= $this->xpToNextLevel()) {
-            $this->xp -= $this->xpToNextLevel();
-            $this->level++;
-        }
+            $this->xp += $amount;
+            $levelUp = false;
+            while ($this->xp >= $this->xpToNextLevel()) {
+                $this->xp -= $this->xpToNextLevel();
+                $this->level++;
+                $levelUp = true;
+            }
+            // Actualisation de la sauvegarde
+            $saveGame = $this->container->getComponent('savegame');
+            if ($saveGame) {
+                $saveGame->performSave();
+            }
+            // Affichage dans le terminal
+            $pp = $this->container->getPrettyPrinter();
+            if ($pp) {
+                $pp->writeLn('XP : ' . $this->xp);
+                $pp->writeLn('Niveau : ' . $this->level);
+                if ($levelUp) {
+                    $pp->writeLn('Bravo ! Vous avez monté de niveau.', 'green');
+                }
+            }
     }
     public function xpToNextLevel(): int {
         return 10 * (2 ** ($this->level - 1));
@@ -149,17 +165,18 @@ class MainCharacter extends AbstractComponent {
         if($this->config['character_has_gender']) {
             $pp->writeLn('Gender : ' . $this->gender);
         }
-        if ($this->race !== null) {
-            $pp->writeLn('Race : ' . ($this->race->name() ?? get_class($this->race)));
-        }
-        $pp->writeLn('XP : ' . ($this->xp ?? 0));
-        if (property_exists($this, 'level')) {
+    // Affichage de la race retiré
+        if (isset($this->levelSystem)) {
+            $pp->writeLn('XP : ' . $this->levelSystem->xp);
+            $pp->writeLn('Level : ' . $this->levelSystem->level);
+        } else {
+            $pp->writeLn('XP : ' . ($this->xp ?? 0));
             $pp->writeLn('Level : ' . ($this->level ?? 1));
         }
         
         $this->container->dispatcher()->dispatch('race.view');
         $this->container->dispatcher()->dispatch('tribe.view');
-        $this->container->dispatcher()->dispatch('level.view');
+    // Suppression de l'affichage du niveau/points/barre d'XP
 
         $pp->writeUnder("\nYour equipment", 'green');
         $header = ['Body part', 'Name', 'Statistics'];
