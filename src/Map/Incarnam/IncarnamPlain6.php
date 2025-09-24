@@ -20,5 +20,7 @@ class IncarnamPlain6 extends Blueprint
 
     public function npcs(): array { return [new \App\Npc\Incarnam\Xelorat()]; }
     public function items(): array { return []; }
-    public function monsters(): array { return []; }
+    public function monsters(): array {
+        return MonsterMapHelper::getMonstersForType('plain');
+    }
 }

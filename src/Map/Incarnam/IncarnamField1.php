@@ -20,5 +20,7 @@ class IncarnamField1 extends Blueprint
 
     public function npcs(): array { return []; }
     public function items(): array { return []; }
-    public function monsters(): array { return []; }
+    public function monsters(): array {
+        return MonsterMapHelper::getMonstersForType('field');
+    }
 }
