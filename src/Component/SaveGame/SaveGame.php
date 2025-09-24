@@ -10,33 +10,33 @@ use App\Component\SaveGame\CoreFunctions\LoadFunction;
 
 class SaveGame extends AbstractComponent {
 
-    public function name() : string {
+    public function name(): string {
         return 'savegame';
     }
 
-    public function getEventName() : array {
+    public function getEventName(): array {
         return ['savegame.save', 'savegame.load', 'savegame.choose_and_load'];
     }
 
-    public function require() : array {
+    public function require(): array {
         return [Console::class, PrettyPrinter::class];
     }
-    
-    public function initialize() : void {
+
+    public function initialize(): void {
         $console = $this->container->getConsole();
         $console->addFunction(new SaveFunction());
         $console->addFunction(new LoadFunction());
     }
 
-    public function defaultConfiguration() : array {
+    public function defaultConfiguration(): array {
         return [
             'directory' => __DIR__ . '/../../../saves',
             'slot' => 'slot1.json'
         ];
     }
 
-    protected function action(string $event, array $arguments) : void {
-        switch($event) {
+    protected function action(string $event, array $arguments): void {
+        switch ($event) {
             case 'savegame.save':
                 $this->performSave();
                 break;
@@ -51,7 +51,9 @@ class SaveGame extends AbstractComponent {
 
     private function ensureSavesDir(): string {
         $dir = rtrim($this->config['directory'], '/');
-        if(!is_dir($dir)) { @mkdir($dir, 0777, true); }
+        if (!is_dir($dir)) {
+            @mkdir($dir, 0777, true);
+        }
         return $dir;
     }
 
@@ -70,12 +72,13 @@ class SaveGame extends AbstractComponent {
         return $dir . '/' . $slug . '.json';
     }
 
-    public function performSave() : void {
+    public function performSave(): void {
         $file = $this->guessFileNameForCharacter();
 
         $map = $this->container->getMap();
         $character = $this->container->getCharacter();
         $inventory = $this->container->getInventory();
+        $race = $this->container->getRace();
 
         $data = [
             'game' => $this->container->state()->getGameName(),
@@ -86,78 +89,90 @@ class SaveGame extends AbstractComponent {
             'character' => [
                 'name' => $character?->name ?? 'Unknown',
                 'gender' => $character?->gender ?? 'Unknown',
-                'race' => $character?->race ? get_class($character->race) : null,
+                'race' => $race?->chosen_race->name() ?? null,
                 'statistics' => $character?->statistics?->asArray() ?? [],
                 'level' => isset($character->levelSystem) ? $character->levelSystem->level : 1,
                 'xp' => isset($character->levelSystem) ? $character->levelSystem->xp : 0,
-                'equipment' => array_map(function($item){ return $item?->name(); }, $character?->equipment ?? [])
+                'equipment' => array_map(function ($item) {
+                    return $item?->name();
+                }, $character?->equipment ?? [])
             ],
-            'inventory' => array_map(function($item){ return $item->name(); }, $inventory?->inventory ?? []),
+            'inventory' => array_map(function ($item) {
+                return $item->name();
+            }, $inventory?->inventory ?? []),
             'saved_at' => date('c')
         ];
 
-        file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE));
+        file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
         // Mettre à jour le slot courant pour un prochain load direct
         $this->config['slot'] = basename($file);
         $this->container->getPrettyPrinter()?->writeLn('Sauvegarde effectuée dans ' . basename($file), 'green');
     }
 
-    private function performLoad() : void {
+    private function performLoad(): void {
         $dir = $this->ensureSavesDir();
         $file = $dir . '/' . $this->config['slot'];
-        if(!is_file($file)) {
+        if (!is_file($file)) {
             $this->container->getPrettyPrinter()?->writeLn('Aucune sauvegarde trouvée: ' . $this->config['slot'], 'red');
             return;
         }
 
         $json = json_decode(file_get_contents($file), true);
-        if(!is_array($json)) {
+        if (!is_array($json)) {
             $this->container->getPrettyPrinter()?->writeLn('Sauvegarde corrompue.', 'red');
             return;
         }
 
         $map = $this->container->getMap();
-        if($map !== null) {
+        if ($map !== null) {
             $map->current_position->x = (int)($json['map']['x'] ?? 0);
             $map->current_position->y = (int)($json['map']['y'] ?? 0);
         }
 
         $character = $this->container->getCharacter();
-        if($character !== null) {
+        if ($character !== null) {
             $character->name = $json['character']['name'] ?? $character->name;
             $character->gender = $json['character']['gender'] ?? $character->gender;
-            if (isset($json['character']['race']) && class_exists($json['character']['race'])) {
-                $character->race = new $json['character']['race']();
-            }
+
             $stats = $json['character']['statistics'] ?? [];
-            foreach($stats as $k=>$v) { $character->statistics->set($k, (int)$v); }
+            foreach ($stats as $k => $v) {
+                $character->statistics->set($k, (int)$v);
+            }
             // Chargement du système de niveau
             $level = isset($json['character']['level']) ? (int)$json['character']['level'] : 1;
             $xp = isset($json['character']['xp']) ? (int)$json['character']['xp'] : 0;
             $character->levelSystem = new \MUD_Coda\Component\LevelSystem($level, $xp);
-                // Affichage automatique dans le terminal
-                $pp = $this->container->getPrettyPrinter();
-                if ($pp) {
-                    $pp->writeLn('XP : ' . $xp);
-                    $pp->writeLn('Niveau : ' . $level);
-                }
+            // Affichage automatique dans le terminal
+            $pp = $this->container->getPrettyPrinter();
+            if ($pp) {
+                $pp->writeLn('XP : ' . $xp);
+                $pp->writeLn('Niveau : ' . $level);
+            }
+        }
+
+        $race = $this->container->getRace();
+        if ($race !== null) {
+            $ns = 'App\\Component\\Races\\' . ($json['character']['race'] ?? '');
+            $race->chosen_race = new $ns() ?? null;
         }
 
         $this->container->getPrettyPrinter()?->writeLn('Partie chargée depuis ' . basename($file), 'green');
     }
 
-    private function chooseAndLoad() : void {
+    private function chooseAndLoad(): void {
         $pp = $this->container->getPrettyPrinter();
         $dir = $this->ensureSavesDir();
-        $files = array_values(array_filter(scandir($dir) ?: [], function($f){ return str_ends_with($f, '.json'); }));
+        $files = array_values(array_filter(scandir($dir) ?: [], function ($f) {
+            return str_ends_with($f, '.json');
+        }));
 
-        if(empty($files)) {
+        if (empty($files)) {
             $pp?->writeLn('Aucune sauvegarde disponible.', 'red');
             return;
         }
 
         $rows = [];
-        foreach($files as $i => $f) {
+        foreach ($files as $i => $f) {
             $path = $dir . '/' . $f;
             $meta = @json_decode(@file_get_contents($path) ?: '', true);
             $title = $meta['game'] ?? 'Inconnue';
@@ -165,10 +180,10 @@ class SaveGame extends AbstractComponent {
             $time = $meta['saved_at'] ?? date('c', @filemtime($path) ?: time());
             $rows[] = [$i, $f, $pname, $title, $time];
         }
-        $pp?->writeTable(['Index','Fichier','Personnage','Jeu','Date'], $rows);
+        $pp?->writeTable(['Index', 'Fichier', 'Personnage', 'Jeu', 'Date'], $rows);
 
         $choice = null;
-        while(!is_numeric($choice) || !isset($files[(int)$choice])) {
+        while (!is_numeric($choice) || !isset($files[(int)$choice])) {
             $choice = readline('Choisissez une sauvegarde (index) >> ');
         }
         $this->config['slot'] = $files[(int)$choice];
