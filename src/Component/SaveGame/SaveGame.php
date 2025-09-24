@@ -70,7 +70,7 @@ class SaveGame extends AbstractComponent {
         return $dir . '/' . $slug . '.json';
     }
 
-    private function performSave() : void {
+    public function performSave() : void {
         $file = $this->guessFileNameForCharacter();
 
         $map = $this->container->getMap();
@@ -86,8 +86,9 @@ class SaveGame extends AbstractComponent {
             'character' => [
                 'name' => $character?->name ?? 'Unknown',
                 'gender' => $character?->gender ?? 'Unknown',
-                'race' => $character?->race ?? null,
+                'race' => $character?->race ? get_class($character->race) : null,
                 'statistics' => $character?->statistics?->asArray() ?? [],
+                'xp' => $character?->xp ?? null,
                 'equipment' => array_map(function($item){ return $item?->name(); }, $character?->equipment ?? [])
             ],
             'inventory' => array_map(function($item){ return $item->name(); }, $inventory?->inventory ?? []),
@@ -124,11 +125,14 @@ class SaveGame extends AbstractComponent {
         if($character !== null) {
             $character->name = $json['character']['name'] ?? $character->name;
             $character->gender = $json['character']['gender'] ?? $character->gender;
-            if (isset($json['character']['race'])) {
-                $character->race = $json['character']['race'];
+            if (isset($json['character']['race']) && class_exists($json['character']['race'])) {
+                $character->race = new $json['character']['race']();
             }
             $stats = $json['character']['statistics'] ?? [];
             foreach($stats as $k=>$v) { $character->statistics->set($k, (int)$v); }
+            if (isset($json['character']['xp'])) {
+                $character->xp = (int)$json['character']['xp'];
+            }
         }
 
         $this->container->getPrettyPrinter()?->writeLn('Partie chargée depuis ' . basename($file), 'green');

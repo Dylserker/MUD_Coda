@@ -161,7 +161,17 @@ class Fight extends AbstractComponent {
         // Gain experience
         $xp = $monster->experience();
         $level->experience += $xp;
+        $character->xp += $xp;
+        // Si le niveau change, le mettre à jour
+        if (property_exists($level, 'level')) {
+            $character->level = $level->level;
+        }
         $pp->writeLn("You gained $xp XP");
         $level->verifiy();
+        // Sauvegarde automatique après gain d'XP et de niveau
+        $saveGame = $this->container->getComponent('savegame');
+        if ($saveGame) {
+            $saveGame->performSave();
+        }
     }
 }
