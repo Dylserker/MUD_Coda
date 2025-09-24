@@ -154,8 +154,6 @@ class MainCharacter extends AbstractComponent {
         }
 
         $this->container->dispatcher()->dispatch('race.view');
-        $this->container->dispatcher()->dispatch('tribe.view');
-        $this->container->dispatcher()->dispatch('level.view');
 
         $pp->writeUnder("\nYour equipment", 'green');
         $header = ['Body part', 'Name', 'Statistics'];
