@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Map\Incarnam;
+use App\Map\Helper\MonsterMapHelper;
 
 use Jugid\Staurie\Component\Map\Blueprint;
 use Jugid\Staurie\Game\Position\Position;
