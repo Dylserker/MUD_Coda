@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Monster\Incarnam\Plain;
 
 use Jugid\Staurie\Game\Monster;
@@ -12,4 +11,7 @@ class Boufton extends Monster {
     public function defense(): int { return 1; }
     public function experience(): int { return 7; }
     public function skills(): array { return ['Bêlement' => 3]; }
+    public function chance(): int {
+        return 15;
+    }
 }

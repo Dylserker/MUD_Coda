@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Monster\Incarnam\Graveyard;
 
 use Jugid\Staurie\Game\Monster;
@@ -12,4 +11,7 @@ class Archer_Chafer extends Monster {
     public function defense(): int { return 3; }
     public function experience(): int { return 26; }
     public function skills(): array { return ['Tir d\'os' => 13]; }
+    public function chance(): int {
+        return 18;
+    }
 }

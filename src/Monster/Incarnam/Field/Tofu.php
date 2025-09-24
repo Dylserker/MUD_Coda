@@ -12,4 +12,9 @@ class Tofu extends Monster {
     public function defense(): int { return 1; }
     public function experience(): int { return 5; }
     public function skills(): array { return ['Ruée' => 4]; }
+
+    public function chance(): int {
+        // Tofu est rapide, on peut mettre une chance d'esquive plus élevée
+        return 35;
+    }
 }

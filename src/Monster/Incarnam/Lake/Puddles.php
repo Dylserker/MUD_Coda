@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Monster\Incarnam\Lake;
 
 use Jugid\Staurie\Game\Monster;
@@ -12,4 +11,7 @@ class Puddles extends Monster {
     public function defense(): int { return 1; }
     public function experience(): int { return 9; }
     public function skills(): array { return ['Éclaboussure' => 6]; }
+    public function chance(): int {
+        return 20;
+    }
 }

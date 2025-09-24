@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Monster\Incarnam\Forest;
 
 use Jugid\Staurie\Game\Monster;
@@ -12,4 +11,7 @@ class Prespic extends Monster {
     public function defense(): int { return 3; }
     public function experience(): int { return 14; }
     public function skills(): array { return ['Morsure d\'ombre' => 9]; }
+    public function chance(): int {
+        return 28;
+    }
 }

@@ -12,4 +12,9 @@ class Wild_Sunflower extends Monster {
     public function defense(): int { return 2; }
     public function experience(): int { return 10; }
     public function skills(): array { return ['Graines piquantes' => 7]; }
+
+    public function chance(): int {
+        // Tournesol sauvage, esquive moyenne
+        return 25;
+    }
 }

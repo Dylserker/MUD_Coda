@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Monster\Incarnam\Forest;
 
 use Jugid\Staurie\Game\Monster;
@@ -12,4 +11,7 @@ class Wild_Boar extends Monster {
     public function defense(): int { return 4; }
     public function experience(): int { return 20; }
     public function skills(): array { return ['Charge' => 12]; }
+    public function chance(): int {
+        return 22;
+    }
 }
