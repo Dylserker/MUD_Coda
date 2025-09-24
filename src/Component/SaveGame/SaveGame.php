@@ -86,6 +86,7 @@ class SaveGame extends AbstractComponent {
             'character' => [
                 'name' => $character?->name ?? 'Unknown',
                 'gender' => $character?->gender ?? 'Unknown',
+                'race' => $character?->race ?? null,
                 'statistics' => $character?->statistics?->asArray() ?? [],
                 'equipment' => array_map(function($item){ return $item?->name(); }, $character?->equipment ?? [])
             ],
@@ -123,6 +124,9 @@ class SaveGame extends AbstractComponent {
         if($character !== null) {
             $character->name = $json['character']['name'] ?? $character->name;
             $character->gender = $json['character']['gender'] ?? $character->gender;
+            if (isset($json['character']['race'])) {
+                $character->race = $json['character']['race'];
+            }
             $stats = $json['character']['statistics'] ?? [];
             foreach($stats as $k=>$v) { $character->statistics->set($k, (int)$v); }
         }

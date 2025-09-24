@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Symfony\\Component\\Finder\\' => array($vendorDir . '/symfony/finder'),
+    'MUD_Coda\\' => array($baseDir . '/src'),
     'Jugid\\Staurie\\Example\\' => array($vendorDir . '/jugid/staurie/example'),
     'Jugid\\Staurie\\' => array($vendorDir . '/jugid/staurie/src'),
     'App\\\\' => array($baseDir . '/src'),

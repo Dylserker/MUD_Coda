@@ -4,7 +4,8 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\\\": "src/"
+            "App\\\\": "src/",
+            "MUD_Coda\\": "src/"
         },
         "classmap": [
             "src/"

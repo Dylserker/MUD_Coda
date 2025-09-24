@@ -1,6 +1,6 @@
 <?php
-
 namespace App\Map\Helper;
+
 use App\Monster\Incarnam\Field\Tofu;
 use App\Monster\Incarnam\Field\Wild_Sunflower;
 use App\Monster\Incarnam\Forest\Prespic;
@@ -11,6 +11,12 @@ use App\Monster\Incarnam\Lake\Droplets;
 use App\Monster\Incarnam\Lake\Puddles;
 use App\Monster\Incarnam\Plain\Boufton;
 use App\Monster\Incarnam\Plain\Bouftou;
+
+interface MonsterInterface
+{
+    public function getXpReward(): int;
+    public function getStats(): \App\Component\StatsInterface;
+}
 
 class MonsterMapHelper
 {

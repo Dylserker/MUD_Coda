@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Map\Incarnam;
 use App\Map\Helper\MonsterMapHelper;
 

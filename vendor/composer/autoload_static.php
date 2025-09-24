@@ -11,6 +11,10 @@ class ComposerStaticInit8f06547006ca958f20421380852bb75b
         array (
             'Symfony\\Component\\Finder\\' => 25,
         ),
+        'M' => 
+        array (
+            'MUD_Coda\\' => 9,
+        ),
         'J' => 
         array (
             'Jugid\\Staurie\\Example\\' => 22,
@@ -26,6 +30,10 @@ class ComposerStaticInit8f06547006ca958f20421380852bb75b
         'Symfony\\Component\\Finder\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/finder',
+        ),
+        'MUD_Coda\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src',
         ),
         'Jugid\\Staurie\\Example\\' => 
         array (
@@ -61,12 +69,16 @@ class ComposerStaticInit8f06547006ca958f20421380852bb75b
         'App\\Component\\ConsoleFr\\Functions\\VoirFunction' => __DIR__ . '/../..' . '/src/Component/ConsoleFr/Functions/VoirFunction.php',
         'App\\Component\\Fight\\CoreFunctions\\FightFunction' => __DIR__ . '/../..' . '/src/Component/Fight/CoreFunctions/FightFunction.php',
         'App\\Component\\Fight\\Fight' => __DIR__ . '/../..' . '/src/Component/Fight/Fight.php',
+        'App\\Component\\LevelInterface' => __DIR__ . '/../..' . '/src/Component/EntityInterfaces.php',
         'App\\Component\\Races\\Eniripsa' => __DIR__ . '/../..' . '/src/Component/Races/Eniripsa.php',
         'App\\Component\\Races\\Feca' => __DIR__ . '/../..' . '/src/Component/Races/Feca.php',
         'App\\Component\\Races\\Sacrieur' => __DIR__ . '/../..' . '/src/Component/Races/Sacrieur.php',
         'App\\Component\\SaveGame\\CoreFunctions\\LoadFunction' => __DIR__ . '/../..' . '/src/Component/SaveGame/CoreFunctions/LoadFunction.php',
         'App\\Component\\SaveGame\\CoreFunctions\\SaveFunction' => __DIR__ . '/../..' . '/src/Component/SaveGame/CoreFunctions/SaveFunction.php',
         'App\\Component\\SaveGame\\SaveGame' => __DIR__ . '/../..' . '/src/Component/SaveGame/SaveGame.php',
+        'App\\Component\\Stats' => __DIR__ . '/../..' . '/src/Component/Stats.php',
+        'App\\Component\\StatsInterface' => __DIR__ . '/../..' . '/src/Component/EntityInterfaces.php',
+        'App\\Map\\Helper\\MonsterInterface' => __DIR__ . '/../..' . '/src/Map/Helper/MonsterMapHelper.php',
         'App\\Map\\Helper\\MonsterMapHelper' => __DIR__ . '/../..' . '/src/Map/Helper/MonsterMapHelper.php',
         'App\\Map\\Incarnam\\IncarnamField1' => __DIR__ . '/../..' . '/src/Map/Incarnam/IncarnamField1.php',
         'App\\Map\\Incarnam\\IncarnamField10' => __DIR__ . '/../..' . '/src/Map/Incarnam/IncarnamField10.php',
@@ -194,6 +206,7 @@ class ComposerStaticInit8f06547006ca958f20421380852bb75b
         'Jugid\\Staurie\\Interface\\Speakable' => __DIR__ . '/..' . '/jugid/staurie/src/Interface/Speakable.php',
         'Jugid\\Staurie\\Staurie' => __DIR__ . '/..' . '/jugid/staurie/src/Staurie.php',
         'MUD_Coda\\Component\\Fight\\Combat' => __DIR__ . '/../..' . '/src/Component/Fight/Combat.php',
+        'MUD_Coda\\Component\\LevelSystem' => __DIR__ . '/../..' . '/src/Component/LevelSystem.php',
         'Symfony\\Component\\Finder\\Comparator\\Comparator' => __DIR__ . '/..' . '/symfony/finder/Comparator/Comparator.php',
         'Symfony\\Component\\Finder\\Comparator\\DateComparator' => __DIR__ . '/..' . '/symfony/finder/Comparator/DateComparator.php',
         'Symfony\\Component\\Finder\\Comparator\\NumberComparator' => __DIR__ . '/..' . '/symfony/finder/Comparator/NumberComparator.php',

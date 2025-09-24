@@ -2,8 +2,11 @@
 namespace App\Monster\Incarnam\Plain;
 
 use Jugid\Staurie\Game\Monster;
+use App\Component\Stats;
+use App\Component\StatsInterface;
+use App\Map\Helper\MonsterInterface;
 
-class Bouftou extends Monster {
+class Bouftou extends Monster implements MonsterInterface {
     public function name() : string { return 'Bouftou'; }
     public function description(): string { return 'Le bouftou, original goat d\'Incarnam.'; }
     public function level() : int { return 2; }
@@ -13,5 +16,20 @@ class Bouftou extends Monster {
     public function skills(): array { return ['Charge' => 8]; }
     public function chance(): int {
         return 10;
+    }
+
+    public function getXpReward(): int {
+        return $this->experience();
+    }
+
+    public function getStats(): StatsInterface {
+        return new Stats(
+            $this->chance(),
+            $this->skills()['Charge'] ?? 0,
+            0, // sagesse
+            $this->defense(),
+            0, // soin
+            $this->health_points()
+        );
     }
 }
